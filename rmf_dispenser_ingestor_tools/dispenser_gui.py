@@ -1,11 +1,16 @@
 from tkinter import *
 from threading import Thread, Lock
 from time import sleep
+import sys
+import argparse
+
+import rclpy
 
 class DispenserTestGui:
     def __init__(self, dispenser_name):
+        self.dispenser_name = dispenser_name
         self.window = Tk()
-        self.window.title("Dispenser Test GUI")
+        self.window.title("Manual dispenser: " + dispenser_name)
         self.window.geometry('350x200')
 
         # Initialize the buttons
@@ -61,6 +66,11 @@ class DispenserTestGui:
     def show(self):
         self.window.mainloop()
 
-def main(args=None):
-    dispenser_test_gui = DispenserTestGui("test_dispenser_1")
+def main(argv=sys.argv):
+    args_without_ros = rclpy.utilities.remove_ros_args(sys.argv)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', '--name', required=True, type=str, help='Name of the dispenser')
+    args = parser.parse_args(argv[1:])
+    
+    dispenser_test_gui = DispenserTestGui(args.name)
     dispenser_test_gui.show()
