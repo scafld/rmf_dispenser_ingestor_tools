@@ -21,7 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
             'dispenser_gui = rmf_dispenser_ingestor_tools.dispenser_gui:main',
-            'ingestor_gui = rmf_dispenser_ingestor_tools.ingestor_gui:main'
+            'ingestor_gui = rmf_dispenser_ingestor_tools.ingestor_gui:main',
+            'dispenser_ingestor_gui = rmf_dispenser_ingestor_tools.dispenser_ingestor_gui:main'
         ],
     },
 )
