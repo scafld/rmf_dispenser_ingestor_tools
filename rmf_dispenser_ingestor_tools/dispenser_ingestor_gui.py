@@ -21,12 +21,12 @@ from rmf_task_msgs.msg import TaskType, Delivery, Loop
 from rmf_task_msgs.srv import SubmitTask, CancelTask
 
 class DispenserIngestorGui(Node):
-    def __init__(self, dispenser_name, ingestor_name):
+    def __init__(self, dispenser_name, dispenser_location, ingestor_name, ingestor_location):
         self.GUI_name = "Dispenser_ingestor_GUI"
         self.dispenser_name = dispenser_name
         self.ingestor_name = ingestor_name
-        self.pickup_place = "main_exit"
-        self.dropoff_place = "hallway_itermediate"
+        self.pickup_place = dispenser_location
+        self.dropoff_place = ingestor_location
         super().__init__(self.GUI_name)
 
         #Initialize GUI elements
@@ -359,11 +359,13 @@ def main(argv=sys.argv):
     # Get the name of the dispenser via arguments
     args_without_ros = rclpy.utilities.remove_ros_args(sys.argv)
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--dispenser', required=True, type=str, help='Name of the dispenser')
-    parser.add_argument('-i', '--ingestor', required=True, type=str, help='Name of the ingestor')
+    parser.add_argument('-dn', '--dispenser_name', required=True, type=str, help='Name of the dispenser')
+    parser.add_argument('-in', '--ingestor_name', required=True, type=str, help='Name of the ingestor')
+    parser.add_argument('-dl', '--dispenser_location', required=True, type=str, help='Location of the dispenser')
+    parser.add_argument('-il', '--ingestor_location', required=True, type=str, help='Location of the ingestor')
     args = parser.parse_args(argv[1:])
 
-    gui = DispenserIngestorGui(args.dispenser, args.ingestor)
+    gui = DispenserIngestorGui(args.dispenser_name, args.dispenser_loaction, args.ingestor_name, args.ingestor_location)
 
     # I wasn't able to find an async spinner, thus starting the spinner in its own thread
     spin_thread = Thread(target=rclpy.spin, args=[gui])
