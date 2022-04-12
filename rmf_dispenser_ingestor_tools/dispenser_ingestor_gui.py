@@ -25,8 +25,8 @@ class DispenserIngestorGui(Node):
         self.GUI_name = "Dispenser_ingestor_GUI"
         self.dispenser_name = dispenser_name
         self.ingestor_name = ingestor_name
-        self.pickup_place = "tinyRobot2_charger"
-        self.dropoff_place = "pantry"
+        self.pickup_place = "main_exit"
+        self.dropoff_place = "hallway_itermediate"
         super().__init__(self.GUI_name)
 
         #Initialize GUI elements
