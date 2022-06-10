@@ -1,12 +1,10 @@
 from tkinter import *
+from PIL import Image, ImageTk
 import tkinter.font as font
 from threading import Thread, Lock
 from time import sleep
 import sys
 import argparse
-
-from matplotlib.pyplot import grid
-from numpy import pad
 
 import rclpy
 from rclpy.node import Node
@@ -44,6 +42,14 @@ class DispenserIngestorGui(Node):
         self.f7 = None
         self.task = None
 
+        #Specify the rmf_dispenser_ingestor path to get the images
+
+        dir_path = "/home/ims/ros_workspaces/dev_ws/src/rmf_dispenser_ingestor_tools/rmf_dispenser_ingestor_tools"
+
+        self.complete_img = ImageTk.PhotoImage(Image.open(dir_path + "/images/complete.png"))
+        self.wait_img = ImageTk.PhotoImage(Image.open(dir_path + "/images/wait.png"))
+        self.load_robot = ImageTk.PhotoImage(Image.open(dir_path + "/images/robot_loading.png"))
+        
         self.my_font = font.Font(family="Helvetica", size=20, weight="bold")
 
         self.start_frame()
@@ -135,11 +141,13 @@ class DispenserIngestorGui(Node):
         self.f5.destroy()
         self.start_frame()
 
+
+################GUI FRAMES#############################################
     def start_frame(self):
         self.destroy_frames()
         self.f1 = Frame(self.root)
         self.f1.grid(row=0, column=0)
-        self.user_button1 = Button(self.f1, text="Begin delivery", command=self.start_delivery, height=10, width=30, font=self.my_font, bg="green3", activebackground='green2')
+        self.user_button1 = Button(self.f1, text="Begin delivery", command=self.start_delivery, height=5, width=25, font=self.my_font, bg="SpringGreen3", activebackground='SpringGreen2')
         self.user_button1.grid(pady=10, padx=20)
     
     def waiting_frame(self):
@@ -148,14 +156,18 @@ class DispenserIngestorGui(Node):
         self.f2.grid(row=0, column=0)
         self.label2 = Label(self.f2, font=self.my_font, text="Transportation request received. Please wait")
         self.label2.grid(pady=10, padx=20)
+        label = Label(self.f2, image=self.wait_img)
+        label.grid(row=1, column=0)
 
     def dispenser_frame(self):
         self.destroy_frames()
         self.f3 = Frame(self.root)
         self.f3.grid(row=0, column=0)
-        self.label3 = Label(self.f3, font=self.my_font, text="Is everything loaded on the robot?")
+        self.label3 = Label(self.f3, font=self.my_font, text="Please load the items on the robot")
         self.label3.grid(pady=10, padx=20)
-        self.user_button3 = Button(self.f3, text="Everything is loaded", height=10, width=30, command=self.user_button_click_dispenser, font=self.my_font, bg="green3", activebackground='green2')
+        self.user_button3 = Button(self.f3, text="Ready", height=5, width=25, command=self.user_button_click_dispenser, font=self.my_font, bg="SpringGreen3", activebackground='SpringGreen2')
+        label = Label(self.f3, image=self.load_robot)
+        label.grid(row=1, column=0)
         self.user_button3.grid(pady=(0, 10), padx=20)
     
     def on_delivery_frame(self):
@@ -164,7 +176,7 @@ class DispenserIngestorGui(Node):
         self.f4.grid(row=0, column=0)
         self.label4 = Label(self.f4, font=self.my_font, text="Delivery in progress")
         self.label4.grid(pady=10, padx=20)
-        self.user_button4 = Button(self.f4, text="Cancel delivery", height=10, width=30, command=self.confirm_cancel_frame, font=self.my_font, bg="red2", activebackground='red3')
+        self.user_button4 = Button(self.f4, text="Cancel", height=5, width=25, command=self.confirm_cancel_frame, font=self.my_font, bg="red2", activebackground='red3')
         self.user_button4.grid(pady=(0, 10), padx=20)
 
     def confirm_cancel_frame(self):
@@ -172,8 +184,8 @@ class DispenserIngestorGui(Node):
         self.f5 = Frame(self.root)
         self.f5.grid(row=0, column=0)
         self.label5 = Label(self.f5, font=self.my_font, text="Are you sure you want to cancel the delivery?")
-        self.user_button_cancel = Button(self.f5, text="Cancel", height=8, width=20, command=self.cancel_delivery, font=self.my_font, bg="red2", activebackground='red3')
-        self.user_button_continue = Button(self.f5, text="Continue", height=8, width=20, command=self.on_delivery_frame, font=self.my_font, bg="green3", activebackground='green2')
+        self.user_button_cancel = Button(self.f5, text="Cancel", height=5, width=20, command=self.cancel_delivery, font=self.my_font, bg="red2", activebackground='red3')
+        self.user_button_continue = Button(self.f5, text="Continue", height=5, width=20, command=self.on_delivery_frame, font=self.my_font, bg="SpringGreen3", activebackground='SpringGreen2')
         self.label5.grid(row=0, column=0, columnspan=2)
         self.user_button_cancel.grid(row=1, column=0)
         self.user_button_continue.grid(row=1, column=1)
@@ -182,20 +194,25 @@ class DispenserIngestorGui(Node):
         self.destroy_frames()
         self.f6 = Frame(self.root)
         self.f6.grid(row=0, column=0)
-        self.label6 = Label(self.f6, font=self.my_font, text="Is everything unloaded from the robot?")
+        self.label6 = Label(self.f6, font=self.my_font, text="Please unload items from the robot")
         self.label6.grid(pady=10, padx=20)
-        self.user_button6 = Button(self.f6, text="Everything is unloaded", height=10, width=30, command=self.user_button_click_ingestor, font=self.my_font, bg="green3", activebackground='green2')
+        self.user_button6 = Button(self.f6, text="Ready", height=5, width=25, command=self.user_button_click_ingestor, font=self.my_font, bg="SpringGreen3", activebackground='SpringGreen2')
+        label = Label(self.f6, image=self.load_robot)
+        label.grid(row=1, column=0)
         self.user_button6.grid(pady=(0, 10), padx=20)
 
     def going_to_start_frame(self):
         self.destroy_frames()
         self.f7 = Frame(self.root)
         self.f7.grid(row=0, column=0)
-        self.label7 = Label(self.f7, font=self.my_font, text="Going back to the start")
+        self.label7 = Label(self.f7, font=self.my_font, text="Delivery finished. Going back to the start")
         self.label7.grid(pady=10, padx=20)
+        label = Label(self.f7, image=self.complete_img)
+        label.grid(row=1, column=0)
         sleep(10)
         self.start_frame()
 
+##############################################
     def dispenser_state_timer_callback(self):
         self.dispenser_state_mutex.acquire()
         self.dispenser_state_msg.time = self.get_clock().now().to_msg()
@@ -238,12 +255,12 @@ class DispenserIngestorGui(Node):
     def blink_user_button_dispenser(self):
         print("starting to blink")
         while self.dispenser_state_msg.mode == DispenserState().BUSY:
-            self.user_button3["background"] = "green2"
-            self.user_button3["activebackground"] = "green2"
+            self.user_button3["background"] = "SpringGreen2"
+            self.user_button3["activebackground"] = "SpringGreen2"
             sleep(1)
 
-            self.user_button3["background"] = "green3"
-            self.user_button3["activebackground"] = "green3"
+            self.user_button3["background"] = "SpringGreen3"
+            self.user_button3["activebackground"] = "SpringGreen3"
             sleep(1)
         
         #print("blinking stopped")
@@ -313,12 +330,12 @@ class DispenserIngestorGui(Node):
     def blink_user_button_ingestor(self):
         print("starting to blink")
         while self.ingestor_state_msg.mode == IngestorState().BUSY:
-            self.user_button6["background"] = "green2"
-            self.user_button6["activebackground"] = "green2"
+            self.user_button6["background"] = "SpringGreen2"
+            self.user_button6["activebackground"] = "SpringGreen2"
             sleep(1)
 
-            self.user_button6["background"] = "green3"
-            self.user_button6["activebackground"] = "green3"
+            self.user_button6["background"] = "SpringGreen3"
+            self.user_button6["activebackground"] = "SpringGreen3"
             sleep(1)
         
         #print("blinking stopped")
